@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>API Example</title>
+  </head>
+  <body>
+    <h1>API Example</h1>
+    <p id="output"></p>
+    <script>
+      fetch('http://chrisbrugman.com:3000/api/search?q=stats')
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('output').innerHTML = `Detections: ${data.detections}, Species: ${data.species}`;
+        });
+    </script>
+  </body>
+</html>
