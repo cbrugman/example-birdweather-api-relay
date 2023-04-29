@@ -37,7 +37,7 @@ app.get("/api/search", async (req, res) => {
     // This uses string interpolation to make our search query string
     // it pulls the posted query param and reformats it for BirdWeather
     const searchString = `q=${req.query.q}`;
-
+	console.log(`https://app.birdweather.com/api/v1/stations/{process.env.BIRDWEATHER_API_KEY}&${searchString}`);
     // It uses node-fetch to call the BirdWeather api, and reads the key from .env
     const response = await fetch(
       `https://app.birdweather.com/api/v1/stations/{process.env.BIRDWEATHER_API_KEY}&${searchString}`,
