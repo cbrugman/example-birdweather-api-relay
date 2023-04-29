@@ -34,7 +34,7 @@ app.get("/", (req, res) => res.send("Hello World!"));
 app.get("/api/search", async (req, res) => {
   try {
     
-	
+	console.log("Received a request");
     // This pulls the posted query param and reformats it for BirdWeather 
 	// To send a parameter to this search string you use ?q=parameter at the end of the URL 
 	// eg: http://localhost:3000/api/search?q=parameter
@@ -48,7 +48,8 @@ app.get("/api/search", async (req, res) => {
     	
 	const apiResponse = await needle('get',`${api_url}`);
     const data = apiResponse.body;
-    res.json(data);
+    console.log("Returned " + data);
+	res.json(data);
 	
 	//more info here https://app.birdweather.com/api/index.html
 
