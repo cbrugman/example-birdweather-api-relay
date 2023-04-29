@@ -1,7 +1,7 @@
 // These import necessary modules and set some initial variables
 require("dotenv").config();
 const express = require("express");
-const fetch = require("node-fetch");
+const fetch = import("node-fetch");
 const convert = require("xml-js");
 const rateLimit = require("express-rate-limit");
 var cors = require("cors");
@@ -31,27 +31,26 @@ app.use(cors());
 // should show 'Hello World!' in the browser
 app.get("/", (req, res) => res.send("Hello World!"));
 
-// Our Goodreads relay route!
+// My BirdWeather relay route
 app.get("/api/search", async (req, res) => {
   try {
     // This uses string interpolation to make our search query string
-    // it pulls the posted query param and reformats it for goodreads
+    // it pulls the posted query param and reformats it for BirdWeather
     const searchString = `q=${req.query.q}`;
 
-    // It uses node-fetch to call the goodreads api, and reads the key from .env
+    // It uses node-fetch to call the BirdWeather api, and reads the key from .env
     const response = await fetch(
-      `https://www.goodreads.com/search/index.xml?key=${process.env.GOODREADS_API_KEY}&${searchString}`,
+      `https://app.birdweather.com/api/v1/stations/{process.env.BIRDWEATHER_API_KEY}&${searchString}`,
     );
-    //more info here https://www.goodreads.com/api/index#search.books
-    const xml = await response.text();
+	
+	//more info here https://app.birdweather.com/api/index.html
+    const results = await response.text();
 
-    // Goodreads API returns XML, so to use it easily on the front end, we can
-    // convert that to JSON:
-    const json = convert.xml2json(xml, { compact: true, spaces: 2 });
-
+    // BirdWeather API returns JSON
     // The API returns stuff we don't care about, so we may as well strip out
     // everything except the results:
-    const results = JSON.parse(json).GoodreadsResponse.search.results;
+	//Chris - I'm not sure what the GoodreadsResponse part does here so it's out for now
+    //const results = JSON.parse(json).GoodreadsResponse.search.results;
 
     return res.json({
       success: true,
@@ -64,6 +63,41 @@ app.get("/api/search", async (req, res) => {
     });
   }
 });
+
+
+Our Goodreads relay route!
+// app.get("/api/search", async (req, res) => {
+  // try {
+    This uses string interpolation to make our search query string
+    it pulls the posted query param and reformats it for goodreads
+    // const searchString = `q=${req.query.q}`;
+
+    It uses node-fetch to call the goodreads api, and reads the key from .env
+    // const response = await fetch(
+      // `https://www.goodreads.com/search/index.xml?key=${process.env.GOODREADS_API_KEY}&${searchString}`,
+    // );
+    more info here https://www.goodreads.com/api/index#search.books
+    // const xml = await response.text();
+
+    Goodreads API returns XML, so to use it easily on the front end, we can
+    convert that to JSON:
+    // const json = convert.xml2json(xml, { compact: true, spaces: 2 });
+
+    The API returns stuff we don't care about, so we may as well strip out
+    everything except the results:
+    // const results = JSON.parse(json).GoodreadsResponse.search.results;
+
+    // return res.json({
+      // success: true,
+      // results,
+    // });
+  // } catch (err) {
+    // return res.status(500).json({
+      // success: false,
+      // message: err.message,
+    // });
+  // }
+// });
 
 // This spins up our sever and generates logs for us to use.
 // Any console.log statements you use in node for debugging will show up in your
